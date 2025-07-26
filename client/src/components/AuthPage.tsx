@@ -84,7 +84,7 @@ const AuthPage: React.FC = () => {
   const handleDemoLogin = async () => {
     try {
       console.log('Attempting demo login...');
-      await login('student1@chms.edu.bn', 'student123');
+      await login('student@example.com', 'student123');
       console.log('Demo login successful, navigating to lobby...');
       navigate('/lobby');
     } catch (error: any) {
