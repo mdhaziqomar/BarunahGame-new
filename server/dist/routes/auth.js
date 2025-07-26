@@ -4,11 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const prisma_1 = require("../generated/prisma");
+const client_1 = require("@prisma/client");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const router = (0, express_1.Router)();
-const prisma = new prisma_1.PrismaClient();
+const prisma = new client_1.PrismaClient();
 // Register new user
 router.post('/register', async (req, res) => {
     try {
@@ -189,4 +189,3 @@ router.post('/register-vendor', async (req, res) => {
     }
 });
 exports.default = router;
-//# sourceMappingURL=auth.js.map

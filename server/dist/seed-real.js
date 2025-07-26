@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_1 = require("./generated/prisma");
+const client_1 = require("@prisma/client");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const prisma = new prisma_1.PrismaClient();
+const prisma = new client_1.PrismaClient();
 // Real MIB Questions for Barunah!
 const realQuestions = [
     // EASY Questions (15 seconds timer, 10 KP each)
@@ -296,4 +296,3 @@ main()
     .finally(async () => {
     await prisma.$disconnect();
 });
-//# sourceMappingURL=seed-real.js.map

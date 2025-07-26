@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const prisma_1 = require("../generated/prisma");
+const client_1 = require("@prisma/client");
 const router = (0, express_1.Router)();
-const prisma = new prisma_1.PrismaClient();
+const prisma = new client_1.PrismaClient();
 // Get dashboard stats
 router.get('/dashboard', async (req, res) => {
     try {
@@ -146,4 +146,3 @@ router.get('/system-health', async (req, res) => {
     }
 });
 exports.default = router;
-//# sourceMappingURL=admin.js.map

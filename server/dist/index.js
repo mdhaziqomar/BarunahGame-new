@@ -103,4 +103,3 @@ server.listen(PORT, () => {
     console.log(`🌐 Client URL: ${process.env.CLIENT_URL || "http://localhost:5173"}`);
     console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
 });
-//# sourceMappingURL=index.js.map

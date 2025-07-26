@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const prisma_1 = require("../generated/prisma");
+const client_1 = require("@prisma/client");
 const router = (0, express_1.Router)();
-const prisma = new prisma_1.PrismaClient();
+const prisma = new client_1.PrismaClient();
 // Get all questions (for admin)
 router.get('/', async (req, res) => {
     try {
@@ -97,4 +97,3 @@ router.delete('/:id', async (req, res) => {
     }
 });
 exports.default = router;
-//# sourceMappingURL=question.js.map

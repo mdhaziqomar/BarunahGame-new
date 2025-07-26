@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const prisma_1 = require("../generated/prisma");
+const client_1 = require("@prisma/client");
 const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
-const prisma = new prisma_1.PrismaClient();
+const prisma = new client_1.PrismaClient();
 // Apply authentication middleware to protected routes
 router.use('/redeem', auth_1.authenticateToken);
 router.use('/user/:userId', auth_1.authenticateToken);
@@ -218,4 +218,3 @@ router.post('/process-qr', async (req, res) => {
     }
 });
 exports.default = router;
-//# sourceMappingURL=reward.js.map

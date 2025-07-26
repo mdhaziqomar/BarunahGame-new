@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const prisma_1 = require("../generated/prisma");
+const client_1 = require("@prisma/client");
 const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
-const prisma = new prisma_1.PrismaClient();
+const prisma = new client_1.PrismaClient();
 // Apply authentication middleware to all game routes
 router.use(auth_1.authenticateToken);
 // Start a new game
@@ -359,4 +359,3 @@ router.get('/leaderboard', async (req, res) => {
     }
 });
 exports.default = router;
-//# sourceMappingURL=game.js.map

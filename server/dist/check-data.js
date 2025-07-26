@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_1 = require("./generated/prisma");
-const prisma = new prisma_1.PrismaClient();
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
 async function checkData() {
     try {
         console.log('🔍 Checking database data...\n');
@@ -18,7 +18,7 @@ async function checkData() {
             }
         });
         console.log(`👥 Users (${users.length}):`);
-        users.forEach(user => {
+        users.forEach((user) => {
             console.log(`  - ${user.fullName} (${user.role}) - ${user.email}`);
         });
         // Check questions
@@ -32,7 +32,7 @@ async function checkData() {
             }
         });
         console.log(`\n❓ Questions (${questions.length}):`);
-        questions.slice(0, 5).forEach(q => {
+        questions.slice(0, 5).forEach((q) => {
             console.log(`  - ${q.question.substring(0, 50)}... (${q.subject} - ${q.difficulty})`);
         });
         // Check rewards
@@ -47,7 +47,7 @@ async function checkData() {
             }
         });
         console.log(`\n🎁 Rewards (${rewards.length}):`);
-        rewards.forEach(reward => {
+        rewards.forEach((reward) => {
             console.log(`  - ${reward.title} (${reward.category}) - ${reward.knowledgePointsCost} KP - Stock: ${reward.stockQuantity}`);
         });
         // Check games
@@ -60,7 +60,7 @@ async function checkData() {
             }
         });
         console.log(`\n🎮 Games (${games.length}):`);
-        games.slice(0, 5).forEach(game => {
+        games.slice(0, 5).forEach((game) => {
             console.log(`  - Score: ${game.score}, Status: ${game.status}, Started: ${game.timeStarted}`);
         });
         // Check user rewards
@@ -72,7 +72,7 @@ async function checkData() {
             }
         });
         console.log(`\n🎫 User Rewards (${userRewards.length}):`);
-        userRewards.slice(0, 5).forEach(ur => {
+        userRewards.slice(0, 5).forEach((ur) => {
             console.log(`  - Status: ${ur.status}, Created: ${ur.createdAt}`);
         });
         console.log('\n✅ Database check completed!');
@@ -85,4 +85,3 @@ async function checkData() {
     }
 }
 checkData();
-//# sourceMappingURL=check-data.js.map
