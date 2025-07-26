@@ -10,10 +10,10 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "postinstall": "prisma generate",
-    "render-build": "npm install && prisma generate && prisma db push && prisma db seed && npm run build"
+    "render-build": "npm install && prisma generate && npm run build && prisma db push && prisma db seed"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "node dist/seed.js"
   },
   "keywords": [
     "barunah",
