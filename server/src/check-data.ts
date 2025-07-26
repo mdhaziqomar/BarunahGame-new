@@ -1,4 +1,4 @@
-import { PrismaClient } from './generated/prisma';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -19,7 +19,7 @@ async function checkData() {
       }
     });
     console.log(`👥 Users (${users.length}):`);
-    users.forEach(user => {
+    users.forEach((user: any) => {
       console.log(`  - ${user.fullName} (${user.role}) - ${user.email}`);
     });
 
@@ -34,7 +34,7 @@ async function checkData() {
       }
     });
     console.log(`\n❓ Questions (${questions.length}):`);
-    questions.slice(0, 5).forEach(q => {
+    questions.slice(0, 5).forEach((q: any) => {
       console.log(`  - ${q.question.substring(0, 50)}... (${q.subject} - ${q.difficulty})`);
     });
 
@@ -50,7 +50,7 @@ async function checkData() {
       }
     });
     console.log(`\n🎁 Rewards (${rewards.length}):`);
-    rewards.forEach(reward => {
+    rewards.forEach((reward: any) => {
       console.log(`  - ${reward.title} (${reward.category}) - ${reward.knowledgePointsCost} KP - Stock: ${reward.stockQuantity}`);
     });
 
@@ -64,7 +64,7 @@ async function checkData() {
       }
     });
     console.log(`\n🎮 Games (${games.length}):`);
-    games.slice(0, 5).forEach(game => {
+    games.slice(0, 5).forEach((game: any) => {
       console.log(`  - Score: ${game.score}, Status: ${game.status}, Started: ${game.timeStarted}`);
     });
 
@@ -77,7 +77,7 @@ async function checkData() {
       }
     });
     console.log(`\n🎫 User Rewards (${userRewards.length}):`);
-    userRewards.slice(0, 5).forEach(ur => {
+    userRewards.slice(0, 5).forEach((ur: any) => {
       console.log(`  - Status: ${ur.status}, Created: ${ur.createdAt}`);
     });
 
