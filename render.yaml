@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: barunah-backend
+    env: node
+    plan: free
+    buildCommand: cd server && npm run render-build
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    healthCheckPath: /api/health
+
+  - type: web
+    name: barunah-frontend
+    env: static
+    plan: free
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: ./client/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://barunah-backend.onrender.com/api 
