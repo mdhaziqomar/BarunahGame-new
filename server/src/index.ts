@@ -35,7 +35,11 @@ const PORT = process.env.PORT || 3000;
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  origin: [
+    'https://barunah-frontend.onrender.com',
+    'http://localhost:5173', // for local development
+    'https://barunah.chms.edu.bn' // your custom domain
+  ],
   credentials: true
 }));
 
@@ -61,7 +65,11 @@ app.use('/api/vendor', vendorRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok' });
+  res.json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    database: 'connected'
+  });
 });
 
 // Socket.io connection handling
