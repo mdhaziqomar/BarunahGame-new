@@ -1,0 +1,67 @@
+{
+    "0": {
+        "id": "687dc56533401",
+        "question": "Who was the 24th Sultan of Brunei?",
+        "optionA": "Sultan Omar Ali Saifuddien I",
+        "optionB": "Sultan Jaililul Alam Aqamaddin",
+        "optionC": "Sultan Abdul Momin",
+        "optionD": "Sultan Sharif Ali",
+        "correctAnswer": "C",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "MEDIUM",
+        "createdAt": "2025-07-21 04:43:17"
+    },
+    "1": {
+        "id": "687dc60e44ea2",
+        "question": "Who ruled Brunei during its Golden Age?",
+        "optionA": "Sultan Sharif Ali",
+        "optionB": "Sultan Bolkiah",
+        "optionC": "Sultan Abdul Kahar",
+        "optionD": "Sultan Muhammad Shah",
+        "correctAnswer": "B",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "MEDIUM",
+        "createdAt": "2025-07-21 04:46:06"
+    },
+    "4": {
+        "id": "687dc75ad7965",
+        "question": "Who was the first Sultan?",
+        "optionA": "Sultan Muhammad Shah",
+        "optionB": "Sultan Sharif Ali",
+        "optionC": "Sultan Abdul Kahar",
+        "optionD": "Sultan Bolkiah",
+        "correctAnswer": "A",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "EASY",
+        "createdAt": "2025-07-21 04:51:38"
+    },
+    "5": {
+        "id": "687dcbb7b7cd7",
+        "question": "Who was the first Resident appointed to Brunei?",
+        "optionA": "Malcolm McArthur",
+        "optionB": "Arthur McDonald",
+        "optionC": "Arthur Malcolm",
+        "optionD": "James Brooke",
+        "correctAnswer": "A",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "EASY",
+        "createdAt": "2025-07-21 05:10:15"
+    },
+    "6": {
+        "id": "687dcc319df8c",
+        "question": "How many sultans have ruled Brunei?",
+        "optionA": "32",
+        "optionB": "29",
+        "optionC": "26",
+        "optionD": "19",
+        "correctAnswer": "B",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "EASY",
+        "createdAt": "2025-07-21 05:12:17"
+    }
+}

@@ -1,0 +1,28 @@
+[
+    {
+        "id": "68807064472a1",
+        "question": "Who was the King that defeated the country of Suluk?",
+        "optionA": "Sultan Bolkiah",
+        "optionB": "Sultan Hassanal Bolkiah",
+        "optionC": "Sultan Abdul Kahar",
+        "optionD": "Sultan Sharif Ali",
+        "correctAnswer": "A",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "MEDIUM",
+        "createdAt": "2025-07-23 05:17:24"
+    },
+    {
+        "id": "68807133a8c72",
+        "question": "What is the Hibiscus flower name in Bahasa Melayu",
+        "optionA": "Bunga Raya",
+        "optionB": "Oregano",
+        "optionC": "Haibeecoos",
+        "optionD": "Talim",
+        "correctAnswer": "A",
+        "explanation": "",
+        "subject": "GENERAL_MIB",
+        "difficulty": "MEDIUM",
+        "createdAt": "2025-07-23 05:20:51"
+    }
+]

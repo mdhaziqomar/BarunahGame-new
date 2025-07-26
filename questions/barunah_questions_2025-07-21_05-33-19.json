@@ -1,0 +1,28 @@
+[
+    {
+        "id": "687dcbafad954",
+        "question": "How many brothers did Sultan Muhammad Shah have?",
+        "optionA": "1",
+        "optionB": "8",
+        "optionC": "13",
+        "optionD": "20",
+        "correctAnswer": "C",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "MEDIUM",
+        "createdAt": "2025-07-21 05:10:07"
+    },
+    {
+        "id": "687dcdcaa6144",
+        "question": "Where did Sultan Sharif Ali come from?",
+        "optionA": "UK",
+        "optionB": "China",
+        "optionC": "Saudi Arabia",
+        "optionD": "Brunei Darussalam",
+        "correctAnswer": "C",
+        "explanation": "",
+        "subject": "ISLAMIC_VALUES",
+        "difficulty": "EASY",
+        "createdAt": "2025-07-21 05:19:06"
+    }
+]

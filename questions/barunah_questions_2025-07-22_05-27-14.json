@@ -1,0 +1,67 @@
+[
+    {
+        "id": "687f1d017ceef",
+        "question": "Which Sultan is credited with introducing Islamic law in Brunei?",
+        "optionA": "2004",
+        "optionB": "1984",
+        "optionC": "1967",
+        "optionD": "1959",
+        "correctAnswer": "B",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "EASY",
+        "createdAt": "2025-07-22 05:09:21"
+    },
+    {
+        "id": "687f1dab155c4",
+        "question": "What is the main purpose of the MIB philosophy?",
+        "optionA": "To modernize Brunei",
+        "optionB": "To guide national development based on Bruneian identity",
+        "optionC": "To promote tourism",
+        "optionD": "To separate religion and government",
+        "correctAnswer": "B",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "EASY",
+        "createdAt": "2025-07-22 05:12:11"
+    },
+    {
+        "id": "687f1e5574c77",
+        "question": "What year was the Melayu Islam Beraja (MIB) philosophy officially declared?",
+        "optionA": "1959",
+        "optionB": "1967",
+        "optionC": "1984",
+        "optionD": "2004",
+        "correctAnswer": "C",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "EASY",
+        "createdAt": "2025-07-22 05:15:01"
+    },
+    {
+        "id": "687f1f0c620c0",
+        "question": "Who is known as the \u201cArchitect of Modern Brunei\u201d?",
+        "optionA": "Sultan Bolkiah (5th Sultan)",
+        "optionB": "Sultan Sharif Ali",
+        "optionC": "Sultan Omar Ali Saifuddien III",
+        "optionD": "Sultan Muhammad Shah",
+        "correctAnswer": "C",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "EASY",
+        "createdAt": "2025-07-22 05:18:04"
+    },
+    {
+        "id": "687f1f8cb9897",
+        "question": "Which war led to the Japanese occupation of Brunei?",
+        "optionA": "World War I",
+        "optionB": "Brunei Civil War",
+        "optionC": "World War II",
+        "optionD": "Borneo Uprising",
+        "correctAnswer": "C",
+        "explanation": "",
+        "subject": "BRUNEI_HISTORY",
+        "difficulty": "EASY",
+        "createdAt": "2025-07-22 05:20:12"
+    }
+]
