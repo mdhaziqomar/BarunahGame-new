@@ -38,7 +38,7 @@ interface AuthContextType {
   userStats: UserStats | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, username: string, password: string) => Promise<void>;
+  register: (email: string, username: string, fullName: string, password: string) => Promise<void>;
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
   updateUserStats: (gameData: any) => void;
@@ -108,10 +108,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (email: string, username: string, password: string) => {
+  const register = async (email: string, username: string, fullName: string, password: string) => {
     setIsLoading(true);
     try {
-      const data = await authAPI.register(email, username, password);
+      const data = await authAPI.register(email, username, fullName, password);
       setUser(data.user);
       localStorage.setItem('token', data.token);
       

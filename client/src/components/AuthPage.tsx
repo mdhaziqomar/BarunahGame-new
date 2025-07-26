@@ -10,6 +10,7 @@ const AuthPage: React.FC = () => {
   const [formData, setFormData] = useState({
     email: '',
     username: '',
+    fullName: '',
     password: '',
     confirmPassword: '',
   });
@@ -46,6 +47,10 @@ const AuthPage: React.FC = () => {
     }
 
     if (!isLogin) {
+      if (!formData.fullName) {
+        newErrors.fullName = 'Full name is required';
+      }
+
       if (!formData.username) {
         newErrors.username = 'Username is required';
       } else if (formData.username.length < 3) {
@@ -72,7 +77,7 @@ const AuthPage: React.FC = () => {
       if (isLogin) {
         await login(formData.email, formData.password);
       } else {
-        await register(formData.email, formData.username, formData.password);
+        await register(formData.email, formData.username, formData.fullName, formData.password);
       }
       navigate('/lobby');
     } catch (error) {
@@ -127,6 +132,25 @@ const AuthPage: React.FC = () => {
               <p className="text-red-500 text-sm mt-1">{errors.email}</p>
             )}
           </div>
+
+          {!isLogin && (
+            <div>
+              <label className="block text-sm font-medium mb-2">Full Name</label>
+              <input
+                type="text"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-barunah-primary ${
+                  errors.fullName ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Enter your full name"
+              />
+              {errors.fullName && (
+                <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+              )}
+            </div>
+          )}
 
           {!isLogin && (
             <div>

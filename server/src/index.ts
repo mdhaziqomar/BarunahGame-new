@@ -20,6 +20,9 @@ dotenv.config();
 
 const app = express();
 const server = createServer(app);
+
+// Trust proxy for rate limiting behind reverse proxy (Render, etc.)
+app.set('trust proxy', 1);
 const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_URL || "http://localhost:5173",
