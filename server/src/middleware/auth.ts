@@ -4,9 +4,10 @@ import jwt from 'jsonwebtoken';
 interface AuthenticatedRequest extends Request {
   userId?: string;
   userRole?: string;
+  headers: Request['headers'];
 }
 
-export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const authenticateToken = (req: any, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
