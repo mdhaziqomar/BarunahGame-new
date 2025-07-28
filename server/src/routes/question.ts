@@ -153,18 +153,30 @@ router.put('/:id', async (req: any, res: any) => {
     const { id } = req.params;
     const updateData = req.body;
 
+    console.log('🔄 Updating question:', { id, updateData });
+
     const question = await prisma.question.update({
       where: { id },
       data: updateData
     });
+
+    console.log('✅ Question updated successfully:', question);
 
     res.json({
       message: 'Question updated successfully',
       question
     });
   } catch (error) {
-    console.error('Update question error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('❌ Update question error:', error);
+    console.error('❌ Error details:', {
+      message: error.message,
+      code: error.code,
+      meta: error.meta
+    });
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message 
+    });
   }
 });
 

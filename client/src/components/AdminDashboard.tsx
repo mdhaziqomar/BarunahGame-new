@@ -278,11 +278,10 @@ const AdminDashboard: React.FC = () => {
           correctAnswer: String.fromCharCode(65 + questionForm.correctAnswer), // Convert to "A", "B", "C", "D"
           explanation: questionForm.explanation,
           difficulty: questionForm.difficulty,
-          subject: questionForm.subject,
-          points: questionForm.points
+          subject: questionForm.subject
         };
 
-        const updatedQuestion = await questionAPI.updateQuestion(editingQuestion.id, updateData);
+        await questionAPI.updateQuestion(editingQuestion.id, updateData);
         
         // Update local state
         setQuestions(prev => prev.map(q => 
@@ -303,8 +302,7 @@ const AdminDashboard: React.FC = () => {
           correctAnswer: String.fromCharCode(65 + questionForm.correctAnswer), // Convert to "A", "B", "C", "D"
           explanation: questionForm.explanation,
           difficulty: questionForm.difficulty,
-          subject: questionForm.subject,
-          points: questionForm.points
+          subject: questionForm.subject
         };
 
         const newQuestion = await questionAPI.createQuestion(newQuestionData);
