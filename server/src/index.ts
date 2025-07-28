@@ -123,8 +123,31 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   console.log(`🚀 Barunah server running on port ${PORT}`);
   console.log(`🌐 Client URL: ${process.env.CLIENT_URL || "http://localhost:5173"}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  
+  // Check if we need to seed data (only in production)
+  if (process.env.NODE_ENV === 'production') {
+    try {
+      const { PrismaClient } = require('@prisma/client');
+      const prisma = new PrismaClient();
+      
+      // Check if we have questions
+      const questionCount = await prisma.question.count();
+      if (questionCount === 0) {
+        console.log('🌱 No questions found, running safe seeding...');
+        // Run safe seeding directly
+        require('./seed-safe');
+        console.log('✅ Safe seeding completed');
+      } else {
+        console.log(`📚 Found ${questionCount} existing questions`);
+      }
+      
+      await prisma.$disconnect();
+    } catch (error) {
+      console.error('❌ Error during seeding check:', error);
+    }
+  }
 }); 

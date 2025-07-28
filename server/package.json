@@ -13,7 +13,7 @@
     "db:seed:safe": "ts-node src/seed-safe.ts",
     "db:seed:safe:prod": "node dist/seed-safe.js",
     "postinstall": "prisma generate",
-    "render-build": "npm install && prisma generate && npm run build && prisma db push && node dist/seed-safe.js"
+    "render-build": "npm install && prisma generate && npm run build && prisma db push"
   },
   "prisma": {
     "seed": "node dist/seed.js"
