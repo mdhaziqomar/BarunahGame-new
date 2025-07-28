@@ -397,9 +397,9 @@ const AdminDashboard: React.FC = () => {
               { key: 'overview', label: 'Overview', icon: '📊' },
               { key: 'users', label: 'Users', icon: '👥' },
               { key: 'questions', label: 'Questions', icon: '❓' },
-                          { key: 'analytics', label: 'Analytics', icon: '📈' },
+              { key: 'analytics', label: 'Analytics', icon: '📈' },
             { key: 'reviews', label: 'Reviews', icon: '⭐' },
-            { key: 'settings', label: 'Settings', icon: '⚙️' },
+              { key: 'settings', label: 'Settings', icon: '⚙️' },
             ].map((tab) => (
               <button
                 key={tab.key}

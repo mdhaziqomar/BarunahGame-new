@@ -169,7 +169,7 @@ export const vendorAPI = {
       method: 'POST',
       body: JSON.stringify({ qrCodeData }),
     }),
-};
+}; 
 
 // Review API functions
 export const reviewAPI = {

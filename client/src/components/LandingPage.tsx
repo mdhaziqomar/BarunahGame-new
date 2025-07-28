@@ -94,7 +94,7 @@ const LandingPage: React.FC = () => {
           </div>
 
           <RecentReviews />
-          
+
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
