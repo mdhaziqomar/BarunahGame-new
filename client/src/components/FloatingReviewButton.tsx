@@ -23,7 +23,7 @@ interface QuestionnaireData {
   priorKnowledge: string;
 }
 
-const ReviewQuestionnaire: React.FC = () => {
+const FloatingReviewButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<QuestionnaireData>({
@@ -189,7 +189,6 @@ const ReviewQuestionnaire: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      // Send the data to the backend
       await reviewAPI.submitReview(formData);
       
       alert('Thank you for your feedback! Your review helps us improve Barunah.');
@@ -331,11 +330,10 @@ const ReviewQuestionnaire: React.FC = () => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        data-review-button
-        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg shadow-md transition-all duration-300 flex items-center space-x-2 text-sm"
+        className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 z-50 flex items-center space-x-2"
       >
         <span>📝</span>
-        <span className="hidden sm:inline">Share Review</span>
+        <span>Share Your Review</span>
       </button>
 
       <AnimatePresence>
@@ -403,4 +401,4 @@ const ReviewQuestionnaire: React.FC = () => {
   );
 };
 
-export default ReviewQuestionnaire; 
+export default FloatingReviewButton; 

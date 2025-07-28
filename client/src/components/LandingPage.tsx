@@ -2,8 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import ReviewQuestionnaire from './ReviewQuestionnaire';
 import RecentReviews from './RecentReviews';
+import FloatingReviewButton from './FloatingReviewButton';
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen game-background flex items-center justify-center">
-      <ReviewQuestionnaire />
+      <FloatingReviewButton />
       <div className="text-center text-white px-4">
         <motion.div
           initial={{ opacity: 0, y: -50 }}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import ReviewQuestionnaire from './ReviewQuestionnaire';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -109,6 +110,9 @@ const Navbar: React.FC = () => {
 
           {/* User Profile & Actions */}
           <div className="flex items-center space-x-4">
+            {/* Share Review Button - Available to all users */}
+            <ReviewQuestionnaire />
+            
             {isAuthenticated && user ? (
               <>
                 {/* Knowledge Points (only for students) */}
@@ -218,6 +222,20 @@ const Navbar: React.FC = () => {
             className="md:hidden border-t border-gray-200"
           >
             <div className="px-2 pt-2 pb-3 space-y-1">
+              {/* Share Review Button for Mobile */}
+              <button
+                onClick={() => {
+                  // This will trigger the ReviewQuestionnaire modal
+                  const reviewButton = document.querySelector('[data-review-button]') as HTMLButtonElement;
+                  if (reviewButton) {
+                    reviewButton.click();
+                  }
+                  setIsMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100"
+              >
+                📝 Share Review
+              </button>
               {isAuthenticated ? (
                 <>
                   <Link
