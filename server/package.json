@@ -9,8 +9,10 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
+    "db:seed:clean": "ts-node src/seed-clean.ts",
+    "db:seed:safe": "ts-node src/seed-safe.ts",
     "postinstall": "prisma generate",
-    "render-build": "npm install && prisma generate && npm run build && prisma db push && prisma db seed"
+    "render-build": "npm install && prisma generate && npm run build && prisma db push && npm run db:seed:safe"
   },
   "prisma": {
     "seed": "node dist/seed.js"

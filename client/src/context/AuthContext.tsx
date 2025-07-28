@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { authAPI, userAPI } from '../api/api';
 
@@ -66,6 +66,54 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Check for existing token on app startup
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          setIsLoading(true);
+          const data = await authAPI.verify();
+          setUser(data.user);
+          
+          // Fetch user stats if it's a student
+          if (data.user.role === 'STUDENT') {
+            try {
+              const statsData = await userAPI.getStats(data.user.id);
+              setUserStats(statsData.stats);
+            } catch (statsError) {
+              console.error('Error fetching user stats:', statsError);
+              // Set default stats for students
+              const initialStats: UserStats = {
+                totalGamesPlayed: 0,
+                totalCorrectAnswers: 0,
+                totalQuestions: 0,
+                bossesDefeated: 0,
+                longestStreak: 0,
+                averageScore: 0,
+                totalTimeSpent: 0,
+                favoriteSubject: 'General MIB',
+                totalKnowledgePoints: data.user.knowledgePoints || 0,
+                currentLevel: data.user.level || 1,
+                nextLevelKP: 200,
+              };
+              setUserStats(initialStats);
+            }
+          } else {
+            setUserStats(null);
+          }
+        } catch (error) {
+          console.error('Token verification failed:', error);
+          localStorage.removeItem('token');
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);

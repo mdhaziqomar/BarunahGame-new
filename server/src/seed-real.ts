@@ -211,15 +211,23 @@ async function main() {
     }
   });
 
-  // Insert real questions
+  // Insert real questions (skip if they exist)
   for (const question of realQuestions) {
-    await prisma.question.create({
-      data: {
-        ...question,
-        subject: question.subject as any,
-        difficulty: question.difficulty as any
+    try {
+      await prisma.question.create({
+        data: {
+          ...question,
+          subject: question.subject as any,
+          difficulty: question.difficulty as any
+        }
+      });
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        console.log(`Question already exists: ${question.question.substring(0, 50)}...`);
+      } else {
+        throw error;
       }
-    });
+    }
   }
 
   // Create real rewards
