@@ -85,7 +85,18 @@ router.post('/refresh', async (req: any, res: any) => {
   try {
     console.log('🔄 Starting bulk question refresh...');
     
-    // Clear all existing questions
+    // First, delete all related records that reference questions
+    console.log('🧹 Clearing related records...');
+    
+    // Delete game answers that reference questions
+    const deletedAnswers = await prisma.gameAnswer.deleteMany({});
+    console.log(`🗑️ Deleted ${deletedAnswers.count} game answers`);
+    
+    // Delete games that might reference questions
+    const deletedGames = await prisma.game.deleteMany({});
+    console.log(`🗑️ Deleted ${deletedGames.count} games`);
+    
+    // Now safely delete all questions
     const deletedQuestions = await prisma.question.deleteMany({});
     console.log(`🗑️ Deleted ${deletedQuestions.count} existing questions`);
     
@@ -126,7 +137,9 @@ router.post('/refresh', async (req: any, res: any) => {
     res.json({
       message: 'Questions refreshed successfully',
       deletedCount: deletedQuestions.count,
-      importedCount: totalImported
+      importedCount: totalImported,
+      deletedAnswers: deletedAnswers.count,
+      deletedGames: deletedGames.count
     });
   } catch (error) {
     console.error('❌ Bulk refresh error:', error);

@@ -315,16 +315,13 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  // INSTANT REFRESH - Import all questions from compiled file
+  // REFRESH - Get latest questions from database
   const handleRefreshQuestions = async () => {
     try {
       setIsRefreshingQuestions(true);
-      console.log('🔄 Starting instant question refresh...');
+      console.log('🔄 Refreshing questions list from database...');
       
-      const response = await questionAPI.refreshAllQuestions();
-      console.log('✅ Questions refreshed:', response);
-      
-      // Refresh the questions list
+      // Simply fetch the latest questions from database
       const questionsResponse = await questionAPI.getAllQuestions();
       const questionsWithDefaults = (questionsResponse.questions || []).map((q: any) => ({
         ...q,
@@ -340,7 +337,7 @@ const AdminDashboard: React.FC = () => {
         totalQuestions: questionsWithDefaults.length
       }));
       
-      alert(`✅ Successfully refreshed ${response.importedCount} questions!`);
+      console.log(`✅ Refreshed ${questionsWithDefaults.length} questions from database`);
     } catch (error) {
       console.error('❌ Error refreshing questions:', error);
       alert('❌ Error refreshing questions. Please try again.');
@@ -643,7 +640,7 @@ const AdminDashboard: React.FC = () => {
                         : 'bg-green-600 text-white hover:bg-green-700'
                     }`}
                   >
-                    {isRefreshingQuestions ? '🔄 Refreshing...' : '🔄 Refresh All Questions'}
+                    {isRefreshingQuestions ? '🔄 Refreshing...' : '🔄 Refresh List'}
                   </button>
                   <button
                     onClick={handleAddQuestion}

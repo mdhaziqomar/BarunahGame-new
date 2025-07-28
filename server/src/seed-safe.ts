@@ -63,6 +63,19 @@ async function main() {
 
   // COMPLETELY CLEAR ALL QUESTIONS - This ensures no duplicates and fresh start
   console.log('🧹 COMPLETELY CLEARING ALL EXISTING QUESTIONS...');
+  
+  // First, delete all related records that reference questions
+  console.log('🧹 Clearing related records...');
+  
+  // Delete game answers that reference questions
+  const deletedAnswers = await prisma.gameAnswer.deleteMany({});
+  console.log(`🗑️ Deleted ${deletedAnswers.count} game answers`);
+  
+  // Delete games that might reference questions
+  const deletedGames = await prisma.game.deleteMany({});
+  console.log(`🗑️ Deleted ${deletedGames.count} games`);
+  
+  // Now safely delete all questions
   const deletedQuestions = await prisma.question.deleteMany({});
   console.log(`🗑️ Deleted ${deletedQuestions.count} existing questions`);
 
@@ -252,6 +265,12 @@ async function main() {
   console.log(`👥 Total users: ${finalUsers.length} (ALL PRESERVED)`);
   console.log(`📚 Total questions: ${finalQuestions.length} (FRESH IMPORT)`);
   console.log(`🎁 Total rewards: ${finalRewards.length} (FRESH IMPORT)`);
+  console.log('='.repeat(50));
+  console.log(`🗑️ Cleanup summary:`);
+  console.log(`   🎮 Games deleted: ${deletedGames.count}`);
+  console.log(`   📝 Game answers deleted: ${deletedAnswers.count}`);
+  console.log(`   ❓ Questions deleted: ${deletedQuestions.count}`);
+  console.log(`   🎁 Rewards deleted: ${deletedRewards.count}`);
   console.log('='.repeat(50));
   
   // Show user preservation confirmation
