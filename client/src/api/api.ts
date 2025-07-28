@@ -136,8 +136,8 @@ export const adminAPI = {
     }),
 };
 
-// Questions API functions
-export const questionsAPI = {
+// Question API functions
+export const questionAPI = {
   getAllQuestions: () => apiRequest('/questions'),
   
   createQuestion: (questionData: any) =>
@@ -146,16 +146,30 @@ export const questionsAPI = {
       body: JSON.stringify(questionData),
     }),
 
-  updateQuestion: (questionId: string, updates: any) =>
-    apiRequest(`/questions/${questionId}`, {
+  updateQuestion: (id: string, questionData: any) =>
+    apiRequest(`/questions/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(updates),
+      body: JSON.stringify(questionData),
     }),
 
-  deleteQuestion: (questionId: string) =>
-    apiRequest(`/questions/${questionId}`, {
+  deleteQuestion: (id: string) =>
+    apiRequest(`/questions/${id}`, {
       method: 'DELETE',
     }),
+
+  bulkCreateQuestions: (questions: any[]) =>
+    apiRequest('/questions/bulk', {
+      method: 'POST',
+      body: JSON.stringify({ questions }),
+    }),
+
+  // INSTANT REFRESH - Import all questions from compiled file
+  refreshAllQuestions: () =>
+    apiRequest('/questions/refresh', {
+      method: 'POST',
+    }),
+
+  getQuestionStats: () => apiRequest('/questions/stats'),
 };
 
 // Vendor API functions

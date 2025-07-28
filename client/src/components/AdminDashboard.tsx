@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { adminAPI, questionsAPI, reviewAPI } from '../api/api';
+import { adminAPI, questionAPI, reviewAPI } from '../api/api';
 
 interface User {
   id: string;
@@ -73,6 +73,7 @@ const AdminDashboard: React.FC = () => {
   });
   const [questionFilter, setQuestionFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
   const [subjectFilter, setSubjectFilter] = useState<'ALL' | 'MELAYU_CULTURE' | 'ISLAMIC_VALUES' | 'BERAJA_SYSTEM' | 'GENERAL_MIB' | 'BRUNEI_HISTORY'>('ALL');
+  const [isRefreshingQuestions, setIsRefreshingQuestions] = useState(false);
 
   // Real system stats from API
   const [systemStats, setSystemStats] = useState<SystemStats>({
@@ -134,7 +135,7 @@ const AdminDashboard: React.FC = () => {
 
         // Fetch questions
         try {
-          const questionsResponse = await questionsAPI.getAllQuestions();
+          const questionsResponse = await questionAPI.getAllQuestions();
           console.log('Questions response:', questionsResponse);
           // Map questions to include missing properties with default values
           const questionsWithDefaults = (questionsResponse.questions || []).map((q: any) => ({
@@ -298,10 +299,41 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleToggleQuestionStatus = async (questionId: string, isActive: boolean) => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-    console.log('Toggling question status:', questionId, !isActive);
-    alert(`Question ${!isActive ? 'activated' : 'deactivated'} successfully!`);
+    // Implementation for toggling question status
+  };
+
+  // INSTANT REFRESH - Import all questions from compiled file
+  const handleRefreshQuestions = async () => {
+    try {
+      setIsRefreshingQuestions(true);
+      console.log('🔄 Starting instant question refresh...');
+      
+      const response = await questionAPI.refreshAllQuestions();
+      console.log('✅ Questions refreshed:', response);
+      
+      // Refresh the questions list
+      const questionsResponse = await questionAPI.getAllQuestions();
+      const questionsWithDefaults = (questionsResponse.questions || []).map((q: any) => ({
+        ...q,
+        points: q.points || (q.difficulty === 'EASY' ? 75 : q.difficulty === 'MEDIUM' ? 100 : 150),
+        timesAnswered: q.timesAnswered || 0,
+        correctAnswers: q.correctAnswers || 0,
+      }));
+      setQuestions(questionsWithDefaults);
+      
+      // Update system stats
+      setSystemStats(prev => ({
+        ...prev,
+        totalQuestions: questionsWithDefaults.length
+      }));
+      
+      alert(`✅ Successfully refreshed ${response.importedCount} questions!`);
+    } catch (error) {
+      console.error('❌ Error refreshing questions:', error);
+      alert('❌ Error refreshing questions. Please try again.');
+    } finally {
+      setIsRefreshingQuestions(false);
+    }
   };
 
   const updateQuestionForm = (field: keyof QuestionForm, value: any) => {
@@ -588,12 +620,25 @@ const AdminDashboard: React.FC = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-gray-800">Question Management</h2>
-                <button
-                  onClick={handleAddQuestion}
-                  className="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
-                >
-                  ➕ Add New Question
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleRefreshQuestions}
+                    disabled={isRefreshingQuestions}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                      isRefreshingQuestions 
+                        ? 'bg-gray-400 text-white cursor-not-allowed' 
+                        : 'bg-green-600 text-white hover:bg-green-700'
+                    }`}
+                  >
+                    {isRefreshingQuestions ? '🔄 Refreshing...' : '🔄 Refresh All Questions'}
+                  </button>
+                  <button
+                    onClick={handleAddQuestion}
+                    className="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                  >
+                    ➕ Add New Question
+                  </button>
+                </div>
               </div>
 
               {/* Filters */}

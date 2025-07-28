@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -78,6 +80,60 @@ router.post('/bulk', async (req: any, res: any) => {
   }
 });
 
+// BULK REFRESH - Import all questions from compiled file (INSTANT UPDATE)
+router.post('/refresh', async (req: any, res: any) => {
+  try {
+    console.log('🔄 Starting bulk question refresh...');
+    
+    // Clear all existing questions
+    const deletedQuestions = await prisma.question.deleteMany({});
+    console.log(`🗑️ Deleted ${deletedQuestions.count} existing questions`);
+    
+    // Import from compiled file
+    const questionsPath = path.join(__dirname, '../../questions/compiled-questions.json');
+    const questionsData = fs.readFileSync(questionsPath, 'utf8');
+    const questions = JSON.parse(questionsData);
+    
+    console.log(`📖 Found ${questions.length} questions to import...`);
+    
+    // Import in batches for better performance
+    const batchSize = 50;
+    let totalImported = 0;
+    
+    for (let i = 0; i < questions.length; i += batchSize) {
+      const batch = questions.slice(i, i + batchSize);
+      const questionData = batch.map(question => ({
+        question: question.question,
+        optionA: question.optionA,
+        optionB: question.optionB,
+        optionC: question.optionC,
+        optionD: question.optionD,
+        correctAnswer: question.correctAnswer,
+        explanation: question.explanation || '',
+        subject: question.subject as any,
+        difficulty: question.difficulty as any
+      }));
+      
+      await prisma.question.createMany({
+        data: questionData
+      });
+      
+      totalImported += batch.length;
+    }
+    
+    console.log(`✅ Successfully refreshed ${totalImported} questions`);
+    
+    res.json({
+      message: 'Questions refreshed successfully',
+      deletedCount: deletedQuestions.count,
+      importedCount: totalImported
+    });
+  } catch (error) {
+    console.error('❌ Bulk refresh error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Update question
 router.put('/:id', async (req: any, res: any) => {
   try {
@@ -111,6 +167,45 @@ router.delete('/:id', async (req: any, res: any) => {
     res.json({ message: 'Question deleted successfully' });
   } catch (error) {
     console.error('Delete question error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Get question statistics
+router.get('/stats', async (req: any, res: any) => {
+  try {
+    const totalQuestions = await prisma.question.count();
+    const easyQuestions = await prisma.question.count({
+      where: { difficulty: 'EASY' }
+    });
+    const mediumQuestions = await prisma.question.count({
+      where: { difficulty: 'MEDIUM' }
+    });
+    const hardQuestions = await prisma.question.count({
+      where: { difficulty: 'HARD' }
+    });
+    
+    const subjectStats = await prisma.question.groupBy({
+      by: ['subject'],
+      _count: {
+        subject: true
+      }
+    });
+
+    res.json({
+      totalQuestions,
+      difficultyBreakdown: {
+        easy: easyQuestions,
+        medium: mediumQuestions,
+        hard: hardQuestions
+      },
+      subjectBreakdown: subjectStats.map(stat => ({
+        subject: stat.subject,
+        count: stat._count.subject
+      }))
+    });
+  } catch (error) {
+    console.error('Get question stats error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

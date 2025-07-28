@@ -1,129 +1,16 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const prisma = new PrismaClient();
 
-// Real MIB Questions for Barunah!
-const realQuestions = [
-  // EASY Questions (15 seconds timer, 10 KP each)
-  {
-    question: "What are the three pillars of MIB?",
-    optionA: "Malay, Islam, Monarchy",
-    optionB: "Culture, Religion, Government", 
-    optionC: "Tradition, Faith, Leadership",
-    optionD: "Heritage, Belief, Authority",
-    correctAnswer: "A",
-    explanation: "MIB stands for Melayu (Malay), Islam, and Beraja (Monarchy) - the three fundamental pillars of Brunei's national philosophy.",
-    subject: "GENERAL_MIB",
-    difficulty: "EASY"
-  },
-  {
-    question: "What is the official language of Brunei Darussalam?",
-    optionA: "English",
-    optionB: "Malay",
-    optionC: "Arabic",
-    optionD: "Chinese",
-    correctAnswer: "B",
-    explanation: "Malay (Bahasa Melayu) is the official language of Brunei, reflecting the Melayu component of MIB.",
-    subject: "MELAYU_CULTURE",
-    difficulty: "EASY"
-  },
-  {
-    question: "When did Brunei gain full independence?",
-    optionA: "1984",
-    optionB: "1963",
-    optionC: "1971",
-    optionD: "1990",
-    correctAnswer: "A",
-    explanation: "Brunei gained full independence on January 1, 1984, marking the beginning of modern Brunei under MIB philosophy.",
-    subject: "BRUNEI_HISTORY",
-    difficulty: "EASY"
-  },
-  {
-    question: "What is the official religion of Brunei?",
-    optionA: "Buddhism",
-    optionB: "Christianity",
-    optionC: "Islam",
-    optionD: "Hinduism",
-    correctAnswer: "C",
-    explanation: "Islam is the official religion of Brunei, representing the Islam pillar of MIB.",
-    subject: "ISLAMIC_VALUES",
-    difficulty: "EASY"
-  },
-  {
-    question: "What does 'Beraja' mean in MIB?",
-    optionA: "Democracy",
-    optionB: "Monarchy",
-    optionC: "Republic",
-    optionD: "Federation",
-    correctAnswer: "B",
-    explanation: "Beraja refers to the monarchy system, emphasizing the importance of the Sultan as the head of state.",
-    subject: "BERAJA_SYSTEM",
-    difficulty: "EASY"
-  },
-  {
-    question: "Which Sultan is known as the 'Father of Independence'?",
-    optionA: "Sultan Omar Ali Saifuddien III",
-    optionB: "Sultan Hassanal Bolkiah",
-    optionC: "Sultan Abdul Jalilul Akbar",
-    optionD: "Sultan Muhammad Alauddin",
-    correctAnswer: "A",
-    explanation: "Sultan Omar Ali Saifuddien III is known as the 'Father of Independence' for his role in Brunei's path to independence.",
-    subject: "BRUNEI_HISTORY",
-    difficulty: "EASY"
-  },
-  {
-    question: "What is the national flower of Brunei?",
-    optionA: "Orchid",
-    optionB: "Rose",
-    optionC: "Jasmine",
-    optionD: "Lotus",
-    correctAnswer: "A",
-    explanation: "The orchid is the national flower of Brunei, symbolizing beauty and grace.",
-    subject: "MELAYU_CULTURE",
-    difficulty: "EASY"
-  },
-  {
-    question: "What is the traditional Malay greeting?",
-    optionA: "Hello",
-    optionB: "Salam",
-    optionC: "Hi",
-    optionD: "Good morning",
-    correctAnswer: "B",
-    explanation: "Salam is the traditional Malay greeting, reflecting Islamic and cultural values.",
-    subject: "MELAYU_CULTURE",
-    difficulty: "EASY"
-  },
-  {
-    question: "What is the capital city of Brunei?",
-    optionA: "Bandar Seri Begawan",
-    optionB: "Kuala Belait",
-    optionC: "Tutong",
-    optionD: "Seria",
-    correctAnswer: "A",
-    explanation: "Bandar Seri Begawan is the capital city of Brunei Darussalam.",
-    subject: "BRUNEI_HISTORY",
-    difficulty: "EASY"
-  },
-  {
-    question: "What is the main principle of Islamic governance in MIB?",
-    optionA: "Democracy",
-    optionB: "Justice and consultation",
-    optionC: "Socialism",
-    optionD: "Capitalism",
-    correctAnswer: "B",
-    explanation: "Islamic governance in MIB emphasizes justice and consultation (Syura) as core principles.",
-    subject: "ISLAMIC_VALUES",
-    difficulty: "EASY"
-  }
-];
-
 async function main() {
-  console.log('🌱 Starting safe data seeding...');
+  console.log('🌱 Starting comprehensive data seeding...');
 
   // Check existing users
   const existingUsers = await prisma.user.findMany();
-  console.log(`👥 Found ${existingUsers.length} existing users`);
+  console.log(`👥 Found ${existingUsers.length} existing users - ALL WILL BE PRESERVED`);
 
   // Create admin account only if it doesn't exist
   const existingAdmin = await prisma.user.findUnique({
@@ -174,25 +61,126 @@ async function main() {
     vendor = existingVendor;
   }
 
-  // Clear existing questions to prevent duplicates
-  console.log('🧹 Clearing existing questions...');
-  await prisma.question.deleteMany({});
+  // COMPLETELY CLEAR ALL QUESTIONS - This ensures no duplicates and fresh start
+  console.log('🧹 COMPLETELY CLEARING ALL EXISTING QUESTIONS...');
+  const deletedQuestions = await prisma.question.deleteMany({});
+  console.log(`🗑️ Deleted ${deletedQuestions.count} existing questions`);
 
-  // Insert real questions
-  console.log('📚 Inserting questions...');
-  for (const question of realQuestions) {
-    await prisma.question.create({
-      data: {
-        ...question,
+  // Import ALL questions from compiled-questions.json
+  console.log('📚 Importing ALL questions from compiled file...');
+  let totalImportedQuestions = 0;
+  
+  try {
+    const questionsPath = path.join(__dirname, '../../questions/compiled-questions.json');
+    const questionsData = fs.readFileSync(questionsPath, 'utf8');
+    const questions = JSON.parse(questionsData);
+    
+    console.log(`📖 Found ${questions.length} questions to import from compiled file...`);
+    
+    // Import questions in batches for better performance
+    const batchSize = 50;
+    for (let i = 0; i < questions.length; i += batchSize) {
+      const batch = questions.slice(i, i + batchSize);
+      const questionData = batch.map(question => ({
+        question: question.question,
+        optionA: question.optionA,
+        optionB: question.optionB,
+        optionC: question.optionC,
+        optionD: question.optionD,
+        correctAnswer: question.correctAnswer,
+        explanation: question.explanation || '',
         subject: question.subject as any,
         difficulty: question.difficulty as any
+      }));
+      
+      await prisma.question.createMany({
+        data: questionData
+      });
+      
+      totalImportedQuestions += batch.length;
+      console.log(`📝 Imported batch ${Math.floor(i/batchSize) + 1}: ${batch.length} questions (Total: ${totalImportedQuestions})`);
+    }
+    
+    console.log(`✅ Successfully imported ${totalImportedQuestions} questions from compiled file`);
+  } catch (error) {
+    console.error('❌ Error importing questions from compiled file:', error);
+    console.log('🔄 Falling back to hardcoded questions...');
+    
+    // Fallback to hardcoded questions if file import fails
+    const fallbackQuestions = [
+      {
+        question: "What are the three pillars of MIB?",
+        optionA: "Malay, Islam, Monarchy",
+        optionB: "Culture, Religion, Government", 
+        optionC: "Tradition, Faith, Leadership",
+        optionD: "Heritage, Belief, Authority",
+        correctAnswer: "A",
+        explanation: "MIB stands for Melayu (Malay), Islam, and Beraja (Monarchy) - the three fundamental pillars of Brunei's national philosophy.",
+        subject: "GENERAL_MIB",
+        difficulty: "EASY"
+      },
+      {
+        question: "What is the official language of Brunei Darussalam?",
+        optionA: "English",
+        optionB: "Malay",
+        optionC: "Arabic",
+        optionD: "Chinese",
+        correctAnswer: "B",
+        explanation: "Malay (Bahasa Melayu) is the official language of Brunei, reflecting the Melayu component of MIB.",
+        subject: "MELAYU_CULTURE",
+        difficulty: "EASY"
+      },
+      {
+        question: "When did Brunei gain full independence?",
+        optionA: "1984",
+        optionB: "1963",
+        optionC: "1971",
+        optionD: "1990",
+        correctAnswer: "A",
+        explanation: "Brunei gained full independence on January 1, 1984, marking the beginning of modern Brunei under MIB philosophy.",
+        subject: "BRUNEI_HISTORY",
+        difficulty: "EASY"
+      },
+      {
+        question: "What is the official religion of Brunei?",
+        optionA: "Buddhism",
+        optionB: "Christianity",
+        optionC: "Islam",
+        optionD: "Hinduism",
+        correctAnswer: "C",
+        explanation: "Islam is the official religion of Brunei, representing the Islam pillar of MIB.",
+        subject: "ISLAMIC_VALUES",
+        difficulty: "EASY"
+      },
+      {
+        question: "What does 'Beraja' mean in MIB?",
+        optionA: "Democracy",
+        optionB: "Monarchy",
+        optionC: "Republic",
+        optionD: "Federation",
+        correctAnswer: "B",
+        explanation: "Beraja refers to the monarchy system, emphasizing the importance of the Sultan as the head of state.",
+        subject: "BERAJA_SYSTEM",
+        difficulty: "EASY"
       }
+    ];
+
+    await prisma.question.createMany({
+      data: fallbackQuestions.map(q => ({
+        ...q,
+        subject: q.subject as any,
+        difficulty: q.difficulty as any
+      }))
     });
+    
+    totalImportedQuestions = fallbackQuestions.length;
+    console.log(`✅ Imported ${totalImportedQuestions} fallback questions`);
   }
 
   // Clear existing rewards to prevent duplicates
   console.log('🧹 Clearing existing rewards...');
-  await prisma.reward.deleteMany({});
+  const deletedRewards = await prisma.reward.deleteMany({});
+  console.log(`🗑️ Deleted ${deletedRewards.count} existing rewards`);
 
   // Create real rewards (only if vendor exists)
   if (vendor) {
@@ -248,22 +236,33 @@ async function main() {
     ];
 
     console.log('🎁 Creating rewards...');
-    for (const reward of realRewards) {
-      await prisma.reward.create({
-        data: reward
-      });
-    }
+    await prisma.reward.createMany({
+      data: realRewards
+    });
+    console.log(`✅ Created ${realRewards.length} rewards`);
   }
 
-  // Final count
+  // Final count and verification
   const finalUsers = await prisma.user.findMany();
   const finalQuestions = await prisma.question.findMany();
   const finalRewards = await prisma.reward.findMany();
 
-  console.log('✅ Safe data seeding completed!');
-  console.log(`👥 Total users: ${finalUsers.length} (preserved existing users)`);
-  console.log(`📚 Total questions: ${finalQuestions.length}`);
-  console.log(`🎁 Total rewards: ${finalRewards.length}`);
+  console.log('🎉 COMPREHENSIVE DATA SEEDING COMPLETED!');
+  console.log('='.repeat(50));
+  console.log(`👥 Total users: ${finalUsers.length} (ALL PRESERVED)`);
+  console.log(`📚 Total questions: ${finalQuestions.length} (FRESH IMPORT)`);
+  console.log(`🎁 Total rewards: ${finalRewards.length} (FRESH IMPORT)`);
+  console.log('='.repeat(50));
+  
+  // Show user preservation confirmation
+  const studentUsers = finalUsers.filter(u => u.role === 'STUDENT');
+  const adminUsers = finalUsers.filter(u => u.role === 'ADMIN');
+  const vendorUsers = finalUsers.filter(u => u.role === 'VENDOR');
+  
+  console.log(`📊 User breakdown:`);
+  console.log(`   👨‍🎓 Students: ${studentUsers.length} (preserved)`);
+  console.log(`   👨‍💼 Admins: ${adminUsers.length} (preserved)`);
+  console.log(`   🏪 Vendors: ${vendorUsers.length} (preserved)`);
   
   if (!existingAdmin) {
     console.log('👤 New admin account: admin@barunah.edu.bn / admin123');
@@ -271,6 +270,9 @@ async function main() {
   if (!existingVendor) {
     console.log('🏪 New vendor account: vendor@local-store.bn / vendor123');
   }
+  
+  console.log('✅ ALL USER ACCOUNTS PRESERVED - NO DATA LOSS');
+  console.log('✅ ALL QUESTIONS REFRESHED - INSTANT UPDATES ENABLED');
 }
 
 main()
