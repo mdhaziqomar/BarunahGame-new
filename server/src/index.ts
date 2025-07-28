@@ -136,14 +136,12 @@ server.listen(PORT, async () => {
       
       // Check if we have questions
       const questionCount = await prisma.question.count();
-      if (questionCount === 0) {
-        console.log('🌱 No questions found, running safe seeding...');
-        // Run safe seeding directly
-        require('./seed-safe');
-        console.log('✅ Safe seeding completed');
-      } else {
-        console.log(`📚 Found ${questionCount} existing questions`);
-      }
+      console.log(`📚 Found ${questionCount} existing questions`);
+      
+      // Always run safe seeding in production to ensure fresh questions
+      console.log('🌱 Running safe seeding to refresh questions...');
+      require('./seed-safe');
+      console.log('✅ Safe seeding completed');
       
       await prisma.$disconnect();
     } catch (error) {

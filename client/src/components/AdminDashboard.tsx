@@ -264,15 +264,66 @@ const AdminDashboard: React.FC = () => {
       return;
     }
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      if (editingQuestion) {
+        // Update existing question
+        console.log('Updating question:', editingQuestion.id, questionForm);
+        
+        const updateData = {
+          question: questionForm.question,
+          optionA: questionForm.options[0],
+          optionB: questionForm.options[1],
+          optionC: questionForm.options[2],
+          optionD: questionForm.options[3],
+          correctAnswer: String.fromCharCode(65 + questionForm.correctAnswer), // Convert to "A", "B", "C", "D"
+          explanation: questionForm.explanation,
+          difficulty: questionForm.difficulty,
+          subject: questionForm.subject,
+          points: questionForm.points
+        };
 
-    if (editingQuestion) {
-      console.log('Updating question:', editingQuestion.id, questionForm);
-      alert('Question updated successfully!');
-    } else {
-      console.log('Adding new question:', questionForm);
-      alert('Question added successfully!');
+        const updatedQuestion = await questionAPI.updateQuestion(editingQuestion.id, updateData);
+        
+        // Update local state
+        setQuestions(prev => prev.map(q => 
+          q.id === editingQuestion.id ? { ...q, ...updateData } : q
+        ));
+        
+        alert('Question updated successfully!');
+      } else {
+        // Create new question
+        console.log('Adding new question:', questionForm);
+        
+        const newQuestionData = {
+          question: questionForm.question,
+          optionA: questionForm.options[0],
+          optionB: questionForm.options[1],
+          optionC: questionForm.options[2],
+          optionD: questionForm.options[3],
+          correctAnswer: String.fromCharCode(65 + questionForm.correctAnswer), // Convert to "A", "B", "C", "D"
+          explanation: questionForm.explanation,
+          difficulty: questionForm.difficulty,
+          subject: questionForm.subject,
+          points: questionForm.points
+        };
+
+        const newQuestion = await questionAPI.createQuestion(newQuestionData);
+        
+        // Add to local state
+        setQuestions(prev => [newQuestion.question, ...prev]);
+        
+        // Update system stats
+        setSystemStats(prev => ({
+          ...prev,
+          totalQuestions: prev.totalQuestions + 1
+        }));
+        
+        alert('Question added successfully!');
+      }
+    } catch (error) {
+      console.error('Error saving question:', error);
+      alert('Error saving question. Please try again.');
+      return;
     }
 
     // Reset form
@@ -291,10 +342,24 @@ const AdminDashboard: React.FC = () => {
 
   const handleDeleteQuestion = async (questionId: string) => {
     if (window.confirm('Are you sure you want to delete this question?')) {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      console.log('Deleting question:', questionId);
-      alert('Question deleted successfully!');
+      try {
+        await questionAPI.deleteQuestion(questionId);
+        
+        // Remove from local state
+        setQuestions(prev => prev.filter(q => q.id !== questionId));
+        
+        // Update system stats
+        setSystemStats(prev => ({
+          ...prev,
+          totalQuestions: prev.totalQuestions - 1
+        }));
+        
+        console.log('Deleting question:', questionId);
+        alert('Question deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting question:', error);
+        alert('Error deleting question. Please try again.');
+      }
     }
   };
 
