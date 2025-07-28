@@ -1,4 +1,11 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://barunah-backend.onrender.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.DEV ? 'http://localhost:3000/api' : 'https://barunah-backend.onrender.com/api');
+
+console.log('🔧 API Configuration:', {
+  VITE_API_URL: import.meta.env.VITE_API_URL,
+  DEV: import.meta.env.DEV,
+  API_BASE_URL
+});
 
 // Helper function to get auth token
 const getAuthToken = (): string | null => {
@@ -11,6 +18,7 @@ export const apiRequest = async (
   options: RequestInit = {}
 ): Promise<any> => {
   const token = getAuthToken();
+  console.log('🌐 Making API request:', { endpoint, hasToken: !!token, url: `${API_BASE_URL}${endpoint}` });
   
   const config: RequestInit = {
     ...options,
@@ -22,9 +30,11 @@ export const apiRequest = async (
   };
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+  console.log('📡 API response:', { status: response.status, ok: response.ok, endpoint });
   
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ error: 'Network error' }));
+    console.error('❌ API error:', { status: response.status, error: errorData });
     throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
   }
   

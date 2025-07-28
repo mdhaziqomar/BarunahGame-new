@@ -71,16 +71,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       const token = localStorage.getItem('token');
+      console.log('🔍 Checking auth status...', { hasToken: !!token });
+      
       if (token) {
         try {
           setIsLoading(true);
+          console.log('🔐 Attempting to verify token...');
           const data = await authAPI.verify();
+          console.log('✅ Token verification successful:', data);
           setUser(data.user);
           
           // Fetch user stats if it's a student
           if (data.user.role === 'STUDENT') {
             try {
+              console.log('📊 Fetching user stats...');
               const statsData = await userAPI.getStats(data.user.id);
+              console.log('📈 User stats fetched:', statsData.stats);
               setUserStats(statsData.stats);
             } catch (statsError) {
               console.error('Error fetching user stats:', statsError);
@@ -104,11 +110,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setUserStats(null);
           }
         } catch (error) {
-          console.error('Token verification failed:', error);
+          console.error('❌ Token verification failed:', error);
           localStorage.removeItem('token');
         } finally {
           setIsLoading(false);
         }
+      } else {
+        console.log('🔍 No token found in localStorage');
       }
     };
 
@@ -118,9 +126,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
+      console.log('🔐 Attempting login...');
       const data = await authAPI.login(email, password);
+      console.log('✅ Login successful:', data);
       setUser(data.user);
       localStorage.setItem('token', data.token);
+      console.log('💾 Token saved to localStorage');
       
       // Fetch user stats if it's a student
       if (data.user.role === 'STUDENT') {
@@ -191,9 +202,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
+    console.log('🚪 Logging out user...');
     setUser(null);
     setUserStats(null);
     localStorage.removeItem('token');
+    console.log('🗑️ Token removed from localStorage');
   };
 
   const updateUser = (updates: Partial<User>) => {
