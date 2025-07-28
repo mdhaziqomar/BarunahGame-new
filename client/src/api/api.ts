@@ -169,4 +169,20 @@ export const vendorAPI = {
       method: 'POST',
       body: JSON.stringify({ qrCodeData }),
     }),
+};
+
+// Review API functions
+export const reviewAPI = {
+  submitReview: (reviewData: any) =>
+    apiRequest('/reviews/submit', {
+      method: 'POST',
+      body: JSON.stringify(reviewData),
+    }),
+
+  getRecentReviews: (limit: number = 5) =>
+    apiRequest(`/reviews/recent?limit=${limit}`),
+
+  getReviewStats: () => apiRequest('/reviews/stats'),
+
+  getAllReviews: () => apiRequest('/reviews/all'),
 }; 

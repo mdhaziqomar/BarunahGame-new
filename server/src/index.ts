@@ -14,6 +14,7 @@ import questionRoutes from './routes/question';
 import rewardRoutes from './routes/reward';
 import adminRoutes from './routes/admin';
 import vendorRoutes from './routes/vendor';
+import reviewRoutes from './routes/review';
 
 // Load environment variables
 dotenv.config();
@@ -65,6 +66,7 @@ app.use('/api/questions', questionRoutes);
 app.use('/api/rewards', rewardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/vendor', vendorRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

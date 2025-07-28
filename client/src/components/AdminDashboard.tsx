@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { adminAPI, questionsAPI } from '../api/api';
+import { adminAPI, questionsAPI, reviewAPI } from '../api/api';
 
 interface User {
   id: string;
@@ -59,7 +59,7 @@ interface QuestionForm {
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'questions' | 'analytics' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'questions' | 'analytics' | 'reviews' | 'settings'>('overview');
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [questionForm, setQuestionForm] = useState<QuestionForm>({
@@ -93,6 +93,10 @@ const AdminDashboard: React.FC = () => {
 
   // Real analytics data
   const [analytics, setAnalytics] = useState<any>(null);
+
+  // Reviews data
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewStats, setReviewStats] = useState<any>(null);
 
   // Loading state
   const [loading, setLoading] = useState(true);
@@ -148,6 +152,18 @@ const AdminDashboard: React.FC = () => {
         // Fetch recent users
         const usersResponse = await adminAPI.getAllUsers();
         setRecentUsers(usersResponse.users.slice(0, 5) || []); // Get first 5 users
+
+        // Fetch reviews and review stats
+        try {
+          const [reviewsResponse, statsResponse] = await Promise.all([
+            reviewAPI.getAllReviews(),
+            reviewAPI.getReviewStats()
+          ]);
+          setReviews(reviewsResponse);
+          setReviewStats(statsResponse);
+        } catch (error) {
+          console.error('Error fetching reviews:', error);
+        }
       } catch (error) {
         console.error('Error fetching admin data:', error);
       } finally {
@@ -381,8 +397,9 @@ const AdminDashboard: React.FC = () => {
               { key: 'overview', label: 'Overview', icon: '📊' },
               { key: 'users', label: 'Users', icon: '👥' },
               { key: 'questions', label: 'Questions', icon: '❓' },
-              { key: 'analytics', label: 'Analytics', icon: '📈' },
-              { key: 'settings', label: 'Settings', icon: '⚙️' },
+                          { key: 'analytics', label: 'Analytics', icon: '📈' },
+            { key: 'reviews', label: 'Reviews', icon: '⭐' },
+            { key: 'settings', label: 'Settings', icon: '⚙️' },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -870,6 +887,126 @@ const AdminDashboard: React.FC = () => {
                   <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
                     <p className="text-gray-500">Chart visualization would go here</p>
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'reviews' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-800">User Reviews & Feedback</h2>
+
+              {/* Review Statistics */}
+              {reviewStats && (
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+                  <StatCard
+                    title="Total Reviews"
+                    value={reviewStats.totalReviews || 0}
+                    icon="⭐"
+                    color="text-yellow-600"
+                  />
+                  <StatCard
+                    title="Avg Overall Rating"
+                    value={reviewStats.averageRatings?.overallRating?.toFixed(1) || 'N/A'}
+                    icon="📊"
+                    color="text-blue-600"
+                  />
+                  <StatCard
+                    title="Avg Educational Value"
+                    value={reviewStats.averageRatings?.educationalValue?.toFixed(1) || 'N/A'}
+                    icon="📚"
+                    color="text-green-600"
+                  />
+                  <StatCard
+                    title="Avg Entertainment"
+                    value={reviewStats.averageRatings?.entertainmentValue?.toFixed(1) || 'N/A'}
+                    icon="🎮"
+                    color="text-purple-600"
+                  />
+                  <StatCard
+                    title="Avg Cultural Awareness"
+                    value={reviewStats.averageRatings?.culturalAwareness?.toFixed(1) || 'N/A'}
+                    icon="🏛️"
+                    color="text-orange-600"
+                  />
+                </div>
+              )}
+
+              {/* Review Charts */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg p-6 shadow-md">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">📊 Favorite Features</h3>
+                  {reviewStats?.favoriteFeatures ? (
+                    <div className="space-y-3">
+                      {reviewStats.favoriteFeatures.map((feature: any, index: number) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <span className="text-gray-700">{feature.favoriteFeature}</span>
+                          <span className="font-semibold text-blue-600">{feature._count.favoriteFeature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">No data available</p>
+                  )}
+                </div>
+
+                <div className="bg-white rounded-lg p-6 shadow-md">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">📈 Recommendations</h3>
+                  {reviewStats?.recommendations ? (
+                    <div className="space-y-3">
+                      {reviewStats.recommendations.map((rec: any, index: number) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <span className="text-gray-700">{rec.recommendToOthers}</span>
+                          <span className="font-semibold text-green-600">{rec._count.recommendToOthers}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">No data available</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Recent Reviews Table */}
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-800">Recent Reviews</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Favorite Feature</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recommendation</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age Group</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {reviews.slice(0, 10).map((review: any, index: number) => (
+                        <tr key={index} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">
+                              {'⭐'.repeat(review.overallRating)}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">{review.favoriteFeature}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">{review.recommendToOthers}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">{review.ageGroup}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-500">{formatDate(review.createdAt)}</div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>

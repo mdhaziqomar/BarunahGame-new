@@ -302,3 +302,20 @@ model SystemSettings {
   
   @@map("system_settings")
 }
+
+model Review {
+  id                String   @id @default(cuid())
+  overallRating     Int
+  educationalValue  Int
+  entertainmentValue Int
+  culturalAwareness Int
+  difficultyLevel   Int
+  favoriteFeature   String
+  improvements      String?
+  recommendToOthers String
+  ageGroup          String
+  priorKnowledge    String
+  createdAt         DateTime @default(now())
+  
+  @@map("reviews")
+}
