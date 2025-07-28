@@ -299,7 +299,20 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleToggleQuestionStatus = async (questionId: string, isActive: boolean) => {
-    // Implementation for toggling question status
+    try {
+      // Update question status in database
+      await questionAPI.updateQuestion(questionId, { isActive: !isActive });
+      
+      // Update local state
+      setQuestions(prev => prev.map(q => 
+        q.id === questionId ? { ...q, isActive: !isActive } : q
+      ));
+      
+      console.log(`Question ${questionId} ${!isActive ? 'activated' : 'deactivated'}`);
+    } catch (error) {
+      console.error('Error toggling question status:', error);
+      alert('Error updating question status. Please try again.');
+    }
   };
 
   // INSTANT REFRESH - Import all questions from compiled file
