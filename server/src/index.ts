@@ -47,12 +47,34 @@ app.use(cors({
   credentials: true
 }));
 
-// Rate limiting
+// Rate limiting - More generous for free tier
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 1000, // Increased to 1000 requests per 15 minutes
+  message: {
+    error: 'Too many requests, please try again later.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
+
+// Apply rate limiting to all routes except health check
 app.use('/api/', limiter);
+
+// More lenient rate limiting for public endpoints
+const publicLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 2000, // Even more generous for public endpoints
+  message: {
+    error: 'Too many requests, please try again later.',
+    retryAfter: '15 minutes'
+  }
+});
+
+// Apply more lenient rate limiting to specific public routes
+app.use('/api/reviews/recent', publicLimiter);
+app.use('/api/questions', publicLimiter);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));

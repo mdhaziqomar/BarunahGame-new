@@ -20,6 +20,10 @@ const RecentReviews: React.FC = () => {
         setReviews(data);
       } catch (error) {
         console.error('Error fetching recent reviews:', error);
+        // Don't retry on rate limit errors
+        if (error instanceof Error && error.message.includes('429')) {
+          console.log('Rate limit hit, skipping reviews display');
+        }
       } finally {
         setLoading(false);
       }

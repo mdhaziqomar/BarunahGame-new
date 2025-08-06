@@ -151,13 +151,25 @@ router.get('/stats', async (req, res) => {
   }
 });
 
-// Get recent reviews (for public display)
+// Simple in-memory cache for recent reviews
+let recentReviewsCache: any = null;
+let cacheTimestamp: number = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+// Get recent reviews (for public display) with caching
 router.get('/recent', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit as string) || 5;
+    const now = Date.now();
+    
+    // Check if cache is still valid
+    if (recentReviewsCache && (now - cacheTimestamp) < CACHE_DURATION) {
+      const cachedReviews = recentReviewsCache.slice(0, limit);
+      return res.json(cachedReviews);
+    }
     
     const reviews = await prisma.review.findMany({
-      take: limit,
+      take: Math.max(limit, 10), // Cache more than requested
       orderBy: {
         createdAt: 'desc'
       },
@@ -169,7 +181,11 @@ router.get('/recent', async (req, res) => {
       }
     });
 
-    res.json(reviews);
+    // Update cache
+    recentReviewsCache = reviews;
+    cacheTimestamp = now;
+
+    res.json(reviews.slice(0, limit));
   } catch (error) {
     console.error('Error fetching recent reviews:', error);
     res.status(500).json({ 

@@ -35,6 +35,13 @@ export const apiRequest = async (
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ error: 'Network error' }));
     console.error('❌ API error:', { status: response.status, error: errorData });
+    
+    // Handle rate limiting gracefully
+    if (response.status === 429) {
+      console.warn('Rate limit exceeded, returning empty data');
+      return []; // Return empty array for rate limited requests
+    }
+    
     throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
   }
   
