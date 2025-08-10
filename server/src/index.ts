@@ -5,6 +5,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { PrismaClient } from '@prisma/client';
 
 // Import routes
 import authRoutes from './routes/auth';
@@ -21,6 +22,7 @@ dotenv.config();
 
 const app = express();
 const server = createServer(app);
+const prisma = new PrismaClient();
 
 // Trust proxy for rate limiting behind reverse proxy (Render, etc.)
 app.set('trust proxy', 1);
@@ -38,12 +40,12 @@ const PORT = process.env.PORT || 3000;
 
 // Security middleware
 app.use(helmet());
+// CORS with env-driven origins
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,https://barunah-frontend.onrender.com,https://barunah.chms.edu.bn')
+  .split(',')
+  .map(o => o.trim());
 app.use(cors({
-  origin: [
-    'https://barunah-frontend.onrender.com',
-    'http://localhost:5173', // for local development
-    'https://barunah.chms.edu.bn' // your custom domain
-  ],
+  origin: allowedOrigins,
   credentials: true
 }));
 
@@ -90,13 +92,22 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/vendor', vendorRoutes);
 app.use('/api/reviews', reviewRoutes);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'healthy', 
-    timestamp: new Date().toISOString(),
-    database: 'connected'
-  });
+// Health check endpoint - verifies DB connectivity
+app.get('/api/health', async (req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ 
+      status: 'healthy', 
+      timestamp: new Date().toISOString(),
+      database: 'connected'
+    });
+  } catch (e) {
+    res.status(500).json({
+      status: 'unhealthy',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected'
+    });
+  }
 });
 
 // Socket.io connection handling

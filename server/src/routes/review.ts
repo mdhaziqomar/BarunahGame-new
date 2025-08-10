@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-// Submit a new review
+// Submit a new review (also invalidates cache)
 router.post('/submit', async (req, res) => {
   try {
     const {
@@ -54,6 +54,10 @@ router.post('/submit', async (req, res) => {
         priorKnowledge
       }
     });
+
+    // Invalidate cache
+    recentReviewsCache = null;
+    cacheTimestamp = 0;
 
     res.status(201).json({
       message: 'Review submitted successfully',
