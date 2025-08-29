@@ -15,48 +15,42 @@ const GameSetup: React.FC = () => {
       name: 'All Topics',
       icon: '📚',
       description: 'Mixed questions from all MIB topics',
-      color: 'bg-gray-100 text-gray-800 border-gray-300',
-      disabled: false
+      color: 'bg-gray-100 text-gray-800 border-gray-300'
     },
     {
       value: 'MELAYU_CULTURE' as const,
       name: 'Malay Culture',
       icon: '🎭',
       description: 'Traditional arts, music, and customs',
-      color: 'bg-orange-100 text-orange-800 border-orange-300',
-      disabled: true
+      color: 'bg-orange-100 text-orange-800 border-orange-300'
     },
     {
       value: 'ISLAMIC_VALUES' as const,
       name: 'Islamic Values',
       icon: '🕌',
       description: 'Islamic principles and practices',
-      color: 'bg-green-100 text-green-800 border-green-300',
-      disabled: true
+      color: 'bg-green-100 text-green-800 border-green-300'
     },
     {
       value: 'BERAJA_SYSTEM' as const,
       name: 'Beraja System',
       icon: '👑',
       description: 'Monarchy and governance',
-      color: 'bg-purple-100 text-purple-800 border-purple-300',
-      disabled: true
+      color: 'bg-purple-100 text-purple-800 border-purple-300'
     },
     {
       value: 'GENERAL_MIB' as const,
       name: 'MIB Philosophy',
       icon: '⚖️',
       description: 'Core MIB concepts and history',
-      color: 'bg-blue-100 text-blue-800 border-blue-300',
-      disabled: true
+      color: 'bg-blue-100 text-blue-800 border-blue-300'
     },
     {
       value: 'BRUNEI_HISTORY' as const,
       name: 'Brunei History',
       icon: '🏛️',
       description: 'Historical events and heritage',
-      color: 'bg-amber-100 text-amber-800 border-amber-300',
-      disabled: true
+      color: 'bg-amber-100 text-amber-800 border-amber-300'
     }
   ];
 
@@ -68,8 +62,7 @@ const GameSetup: React.FC = () => {
       points: 'Variable Points',
       icon: '🌈',
       description: 'Questions of all difficulty levels',
-      color: 'bg-gray-100 text-gray-800 border-gray-300',
-      disabled: false
+      color: 'bg-gray-100 text-gray-800 border-gray-300'
     },
     {
       value: 'EASY' as const,
@@ -78,8 +71,7 @@ const GameSetup: React.FC = () => {
       points: '75 points',
       icon: '🟢',
       description: 'Basic knowledge questions',
-      color: 'bg-green-100 text-green-800 border-green-300',
-      disabled: true
+      color: 'bg-green-100 text-green-800 border-green-300'
     },
     {
       value: 'MEDIUM' as const,
@@ -88,8 +80,7 @@ const GameSetup: React.FC = () => {
       points: '100 points',
       icon: '🟡',
       description: 'Intermediate level questions',
-      color: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-      disabled: true
+      color: 'bg-yellow-100 text-yellow-800 border-yellow-300'
     },
     {
       value: 'HARD' as const,
@@ -98,8 +89,7 @@ const GameSetup: React.FC = () => {
       points: '150 points',
       icon: '🔴',
       description: 'Challenging expert questions',
-      color: 'bg-red-100 text-red-800 border-red-300',
-      disabled: true
+      color: 'bg-red-100 text-red-800 border-red-300'
     }
   ];
 
@@ -146,27 +136,20 @@ const GameSetup: React.FC = () => {
             {subjects.map((subject) => (
               <motion.div
                 key={subject.value}
-                whileHover={subject.disabled ? {} : { scale: 1.02 }}
-                whileTap={subject.disabled ? {} : { scale: 0.98 }}
-                onClick={subject.disabled ? undefined : () => setSelectedSubject(subject.value as any)}
-                className={`p-4 rounded-lg border-2 transition-all ${
-                  subject.disabled 
-                    ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-500 border-gray-200' 
-                    : selectedSubject === subject.value
-                      ? 'border-barunah-primary bg-barunah-primary bg-opacity-10 cursor-pointer'
-                      : `${subject.color} cursor-pointer`
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                                 onClick={() => setSelectedSubject(subject.value as any)}
+                className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  selectedSubject === subject.value
+                    ? 'border-barunah-primary bg-barunah-primary bg-opacity-10'
+                    : subject.color
                 }`}
               >
                 <div className="text-center">
                   <div className="text-3xl mb-2">{subject.icon}</div>
                   <h3 className="font-bold mb-1">{subject.name}</h3>
                   <p className="text-sm opacity-75">{subject.description}</p>
-                  {subject.disabled && (
-                    <div className="mt-2">
-                      <span className="text-gray-400 text-xs">🔒 Coming Soon</span>
-                    </div>
-                  )}
-                  {selectedSubject === subject.value && !subject.disabled && (
+                  {selectedSubject === subject.value && (
                     <div className="mt-2">
                       <span className="text-barunah-primary font-medium">✓ Selected</span>
                     </div>
@@ -191,15 +174,13 @@ const GameSetup: React.FC = () => {
             {difficulties.map((difficulty) => (
               <motion.div
                 key={difficulty.value}
-                whileHover={difficulty.disabled ? {} : { scale: 1.02 }}
-                whileTap={difficulty.disabled ? {} : { scale: 0.98 }}
-                onClick={difficulty.disabled ? undefined : () => setSelectedDifficulty(difficulty.value)}
-                className={`p-4 rounded-lg border-2 transition-all ${
-                  difficulty.disabled
-                    ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-500 border-gray-200'
-                    : selectedDifficulty === difficulty.value
-                      ? 'border-barunah-primary bg-barunah-primary bg-opacity-10 cursor-pointer'
-                      : `${difficulty.color} cursor-pointer`
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setSelectedDifficulty(difficulty.value)}
+                className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  selectedDifficulty === difficulty.value
+                    ? 'border-barunah-primary bg-barunah-primary bg-opacity-10'
+                    : difficulty.color
                 }`}
               >
                 <div className="flex items-center space-x-4">
@@ -211,13 +192,8 @@ const GameSetup: React.FC = () => {
                       <span className="font-medium">⏱️ {difficulty.timer}</span>
                       <span className="font-medium">💎 {difficulty.points}</span>
                     </div>
-                    {difficulty.disabled && (
-                      <div className="mt-2">
-                        <span className="text-gray-400 text-xs">🔒 Coming Soon</span>
-                      </div>
-                    )}
                   </div>
-                  {selectedDifficulty === difficulty.value && !difficulty.disabled && (
+                  {selectedDifficulty === difficulty.value && (
                     <div className="text-barunah-primary">
                       <span className="text-xl">✓</span>
                     </div>
@@ -299,4 +275,4 @@ const GameSetup: React.FC = () => {
   );
 };
 
-export default GameSetup;
+export default GameSetup; 
